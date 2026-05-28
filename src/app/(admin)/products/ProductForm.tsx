@@ -323,7 +323,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                 "Maroon", "Burgundy", "Beige", "Nude", "Brown", "Grey", "Silver", "Gold",
                 "Teal", "Turquoise", "Coral", "Orange", "Peach", "Mint", "Charcoal", "Pristine White", "Midnight Maroon"
               ].map(color => {
-                const currentColors = formData.color_options.split(',').map(c => c.trim()).filter(Boolean);
+                const currentColors = formData.color_options.split(',').map((c: string) => c.trim()).filter(Boolean);
                 const isSelected = currentColors.includes(color);
                 return (
                   <Button
@@ -334,7 +334,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                     className="h-7 text-xs rounded-full"
                     onClick={() => {
                       if (isSelected) {
-                        setFormData({ ...formData, color_options: currentColors.filter(c => c !== color).join(', ') });
+                        setFormData({ ...formData, color_options: currentColors.filter((c: string) => c !== color).join(', ') });
                       } else {
                         setFormData({ ...formData, color_options: [...currentColors, color].join(', ') });
                       }
@@ -352,7 +352,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
             <Label>Size Matrix</Label>
             <div className="flex flex-wrap gap-2">
               {["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "Free Size"].map(size => {
-                const currentSizes = formData.size_matrix.split(',').map(s => s.trim()).filter(Boolean);
+                const currentSizes = formData.size_matrix.split(',').map((s: string) => s.trim()).filter(Boolean);
                 const isSelected = currentSizes.includes(size);
                 return (
                   <Button
@@ -363,7 +363,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                     className="h-8 w-12 text-xs font-semibold"
                     onClick={() => {
                       if (isSelected) {
-                        setFormData({ ...formData, size_matrix: currentSizes.filter(s => s !== size).join(', ') });
+                        setFormData({ ...formData, size_matrix: currentSizes.filter((s: string) => s !== size).join(', ') });
                       } else {
                         setFormData({ ...formData, size_matrix: [...currentSizes, size].join(', ') });
                       }
