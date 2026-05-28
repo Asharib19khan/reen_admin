@@ -8,21 +8,24 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/login");
   }
 
   const { data: userRoleData } = await supabase
     .from("user_roles")
     .select("role")
-    .eq("id", session.user.id)
-    .single();
+    .eq("id", user.id)
+    .maybeSingle();
 
-  const role = session.user.email?.toLowerCase() === 'yeezus196@gmail.com' 
-    ? 'super_admin' 
-    : (userRoleData?.role || "employee");
+  const role =
+    user.email?.toLowerCase() === "yeezus196@gmail.com"
+      ? "super_admin"
+      : userRoleData?.role || "employee";
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
