@@ -7,23 +7,41 @@ import { Plus } from "lucide-react";
 export default async function ProductsPage({
   searchParams
 }: {
-  searchParams: Promise<{ brand?: string, category?: string }>
+  searchParams: Promise<{ brand?: string; category?: string; filter?: string }>
 }) {
   const supabase = await createClient();
   const resolvedParams = await searchParams;
-  const { brand, category } = resolvedParams;
-  
+  const { brand, filter } = resolvedParams;
+  const category = resolvedParams.category
+    ? decodeURIComponent(resolvedParams.category)
+    : undefined;
+
   const { data: { session } } = await supabase.auth.getSession();
   const { data: userRole } = await supabase.from("user_roles").select("role").eq("id", session?.user.id).single();
   const role = session?.user.email?.toLowerCase() === 'yeezus196@gmail.com' ? 'super_admin' : (userRole?.role || "employee");
 
-  const { data: products } = await supabase
-    .from("products")
-    .select("*")
-    .order("created_at", { ascending: false });
+  let query = supabase.from("products").select("*").order("created_at", { ascending: false });
+
+  if (brand) {
+    query = query.eq("brand", brand);
+  }
+  if (category) {
+    query = query.eq("category", category);
+  }
+  if (filter === "is_best_selling") {
+    query = query.eq("is_best_selling", true);
+  } else if (filter === "is_new_arrival") {
+    query = query.eq("is_new_arrival", true);
+  }
+
+  const { data: products } = await query;
 
   let pageTitle = "All Products";
-  if (brand && category) {
+  if (filter === "is_best_selling") {
+    pageTitle = "Best Selling";
+  } else if (filter === "is_new_arrival") {
+    pageTitle = "New Arrivals";
+  } else if (brand && category) {
     const displayBrand = brand === 'byreen_xo' ? 'byreen.xo' : 'luxereen.wears';
     pageTitle = `${displayBrand} — ${category}`;
   } else if (brand) {

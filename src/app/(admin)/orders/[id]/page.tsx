@@ -78,6 +78,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             <TableHeader>
               <TableRow>
                 <TableHead>Product</TableHead>
+                <TableHead>Variants</TableHead>
                 <TableHead>Quantity</TableHead>
                 <TableHead>Price at Purchase</TableHead>
                 <TableHead className="text-right">Subtotal</TableHead>
@@ -87,6 +88,17 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               {order.order_items.map((item: any) => (
                 <TableRow key={item.id}>
                   <TableCell className="font-medium">{item.products?.title || "Unknown Product"}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    <div className="space-y-0.5">
+                      {item.selected_color && <p>Color: {item.selected_color}</p>}
+                      {item.selected_size && <p>Size: {item.selected_size}</p>}
+                      {item.selected_addon && <p>Add-on: {item.selected_addon}</p>}
+                      {item.custom_measurement && <p className="whitespace-pre-wrap">Measurements: {item.custom_measurement}</p>}
+                      {!item.selected_color && !item.selected_size && !item.selected_addon && !item.custom_measurement && (
+                        <span>—</span>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell>Rs. {item.price_at_purchase}</TableCell>
                   <TableCell className="text-right">Rs. {item.quantity * item.price_at_purchase}</TableCell>

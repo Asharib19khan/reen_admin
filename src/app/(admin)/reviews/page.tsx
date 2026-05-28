@@ -10,14 +10,16 @@ export default async function ReviewsPage() {
     redirect("/login");
   }
 
-  // Get user role
   const { data: roleData } = await supabase
     .from("user_roles")
     .select("role")
-    .eq("user_id", user.id)
+    .eq("id", user.id)
     .single();
 
-  const role = roleData?.role || "employee";
+  const role =
+    user.email?.toLowerCase() === "yeezus196@gmail.com"
+      ? "super_admin"
+      : roleData?.role || "employee";
 
   // Fetch reviews
   const { data: reviews } = await supabase
