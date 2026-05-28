@@ -1,9 +1,16 @@
 import { createClient } from "@/utils/supabase/server";
 import { MediaSlot } from "./MediaSlot";
+import { canManageCatalog, getAdminRole } from "@/lib/admin-role";
+import { redirect } from "next/navigation";
 
 export const revalidate = 0;
 
 export default async function MediaPage() {
+  const auth = await getAdminRole();
+  if (!auth || !canManageCatalog(auth.role)) {
+    redirect("/");
+  }
+
   const supabase = await createClient();
   const { data: banners } = await supabase
     .from("hero_banners")

@@ -10,6 +10,9 @@ export default async function NewProductPage({
   // Employees ARE allowed to add products, so no redirect here.
   
   const resolvedParams = await searchParams;
+  const category = resolvedParams.category
+    ? decodeURIComponent(resolvedParams.category)
+    : "Rings";
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
@@ -18,7 +21,7 @@ export default async function NewProductPage({
       </div>
       <ProductForm initialData={{
         brand: resolvedParams.brand || "byreen_xo",
-        category: resolvedParams.category || "Rings"
+        category,
       }} />
     </div>
   );

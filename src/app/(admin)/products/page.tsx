@@ -32,6 +32,8 @@ export default async function ProductsPage({
     query = query.eq("is_best_selling", true);
   } else if (filter === "is_new_arrival") {
     query = query.eq("is_new_arrival", true);
+  } else if (filter === "home") {
+    query = query.or("is_best_selling.eq.true,is_new_arrival.eq.true");
   }
 
   const { data: products } = await query;
@@ -41,6 +43,8 @@ export default async function ProductsPage({
     pageTitle = "Best Selling";
   } else if (filter === "is_new_arrival") {
     pageTitle = "New Arrivals";
+  } else if (filter === "home") {
+    pageTitle = "Home Page Featured";
   } else if (brand && category) {
     const displayBrand = brand === 'byreen_xo' ? 'byreen.xo' : 'luxereen.wears';
     pageTitle = `${displayBrand} — ${category}`;

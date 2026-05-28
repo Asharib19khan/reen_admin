@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addTeamMember } from "./actions";
 
 export function AddMemberForm() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,6 +24,7 @@ export function AddMemberForm() {
       setError(result.error);
     } else {
       (e.target as HTMLFormElement).reset();
+      router.refresh();
     }
     
     setLoading(false);
@@ -36,7 +39,7 @@ export function AddMemberForm() {
         </div>
         <div className="grid gap-2 flex-1">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" name="password" type="text" placeholder="min 6 chars" required minLength={6} />
+          <Input id="password" name="password" type="password" placeholder="min 6 chars" required minLength={6} autoComplete="new-password" />
         </div>
         <div className="grid gap-2 w-48">
           <Label htmlFor="role">Role</Label>

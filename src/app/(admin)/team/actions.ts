@@ -2,8 +2,15 @@
 
 import { createAdminClient } from "@/utils/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { requireSuperAdmin } from "@/lib/admin-role";
 
 export async function addTeamMember(formData: FormData) {
+  try {
+    await requireSuperAdmin();
+  } catch {
+    return { error: "Unauthorized" };
+  }
+
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const role = formData.get("role") as string;
@@ -48,6 +55,12 @@ export async function addTeamMember(formData: FormData) {
 }
 
 export async function removeTeamMember(userId: string) {
+  try {
+    await requireSuperAdmin();
+  } catch {
+    return { error: "Unauthorized" };
+  }
+
   const supabaseAdmin = createAdminClient();
 
   const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);

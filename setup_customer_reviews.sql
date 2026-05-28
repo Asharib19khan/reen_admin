@@ -1,4 +1,6 @@
--- Create Customer Reviews Table
+-- Run this entire script in Supabase SQL Editor (creates table + policies).
+-- Use this instead of fix_reviews_rls_policy.sql when customer_reviews does not exist yet.
+
 CREATE TABLE IF NOT EXISTS public.customer_reviews (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   customer_name text NOT NULL,
@@ -9,7 +11,6 @@ CREATE TABLE IF NOT EXISTS public.customer_reviews (
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Setup RLS
 ALTER TABLE public.customer_reviews ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Allow public read access to approved reviews" ON public.customer_reviews;
@@ -30,7 +31,7 @@ CREATE POLICY "Allow admin full access to reviews"
     )
   );
 
--- Insert starter reviews only when table is empty
+-- Optional starter reviews (only if table is empty)
 INSERT INTO public.customer_reviews (customer_name, rating, review_text, is_approved, is_featured)
 SELECT * FROM (VALUES
   ('Zara A.', 5, 'The permanent bracelet kit is literally the best thing ever. So seamless and beautiful! I haven''t taken it off since I got it.', true, true),

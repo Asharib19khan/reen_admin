@@ -20,12 +20,20 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: M
       return;
     }
 
-    setMembers(members.map(m => m.id === id ? { ...m, role: newRole } : m));
-    
-    await supabase
+    const previous = members.find((m) => m.id === id);
+    if (!previous) return;
+
+    setMembers(members.map((m) => (m.id === id ? { ...m, role: newRole } : m)));
+
+    const { error } = await supabase
       .from("user_roles")
       .update({ role: newRole })
       .eq("id", id);
+
+    if (error) {
+      setMembers(members.map((m) => (m.id === id ? { ...m, role: previous.role } : m)));
+      alert("Failed to update role: " + error.message);
+    }
   };
 
   const handleDelete = async (id: string) => {

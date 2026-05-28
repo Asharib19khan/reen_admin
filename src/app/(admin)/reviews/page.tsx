@@ -1,27 +1,20 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { ReviewsTable } from "./ReviewsTable";
+import { canManageCatalog, getAdminRole } from "@/lib/admin-role";
 
 export default async function ReviewsPage() {
-  const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) {
+  const auth = await getAdminRole();
+  if (!auth) {
     redirect("/login");
   }
+  if (!canManageCatalog(auth.role)) {
+    redirect("/");
+  }
 
-  const { data: roleData } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
+  const supabase = await createClient();
+  const role = auth.role;
 
-  const role =
-    user.email?.toLowerCase() === "yeezus196@gmail.com"
-      ? "super_admin"
-      : roleData?.role || "employee";
-
-  // Fetch reviews
   const { data: reviews } = await supabase
     .from("customer_reviews")
     .select("*")
