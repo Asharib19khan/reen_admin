@@ -9,14 +9,13 @@ export async function updateSession(request: NextRequest) {
 
   const env = getSupabaseEnv()
   if (!env) {
-    console.error(
-      'Missing Supabase env: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel.'
-    )
     return NextResponse.next({ request })
   }
 
-  let supabaseResponse = NextResponse.next({
-    request,
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
   })
 
   const supabase = createServerClient(env.url, env.anonKey, {
@@ -26,11 +25,13 @@ export async function updateSession(request: NextRequest) {
       },
       setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-        supabaseResponse = NextResponse.next({
-          request,
+        response = NextResponse.next({
+          request: {
+            headers: request.headers,
+          },
         })
         cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set(name, value, options)
+          response.cookies.set(name, value, options)
         )
       },
     },
@@ -41,13 +42,19 @@ export async function updateSession(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser()
 
+    if (user && isLoginRoute) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/'
+      return NextResponse.redirect(url)
+    }
+
     if (!user && !isLoginRoute) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
       return NextResponse.redirect(url)
     }
   } catch (error) {
-    console.error('Middleware auth error:', error)
+    console.error('Proxy auth error:', error)
     if (!isLoginRoute) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
@@ -56,5 +63,5 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  return supabaseResponse
+  return response
 }
