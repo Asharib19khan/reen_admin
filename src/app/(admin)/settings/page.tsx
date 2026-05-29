@@ -1,28 +1,22 @@
 import { createClient } from "@/utils/supabase/server";
 import { SettingsForm } from "./SettingsForm";
 import { redirect } from "next/navigation";
+import { requireSuperAdmin } from "@/lib/admin-role";
 
 export default async function SettingsPage() {
-  const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  const { data: userRole } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("id", session?.user.id)
-    .single();
-
-  const role = session?.user.email?.toLowerCase() === 'yeezus196@gmail.com' ? 'super_admin' : userRole?.role;
-
-  if (role !== "super_admin") {
+  try {
+    await requireSuperAdmin();
+  } catch {
     redirect("/");
   }
+
+  const supabase = await createClient();
 
   const { data: setting } = await supabase
     .from("settings")
     .select("value")
     .eq("key", "payment_details")
-    .single();
+    .maybeSingle();
 
   return (
     <div className="space-y-8 max-w-2xl">

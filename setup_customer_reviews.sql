@@ -23,6 +23,7 @@ DROP POLICY IF EXISTS "Allow admin full access to reviews" ON public.customer_re
 CREATE POLICY "Allow admin full access to reviews"
   ON public.customer_reviews
   FOR ALL
+  TO authenticated
   USING (
     EXISTS (
       SELECT 1 FROM public.user_roles ur

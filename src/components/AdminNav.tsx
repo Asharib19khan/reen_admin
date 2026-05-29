@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, ShoppingCart, Package, Settings, LogOut, Users, Image as ImageIcon, ChevronDown, ChevronRight, Star } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Package, Settings, LogOut, Users, Image as ImageIcon, ChevronDown, ChevronRight, Star, Heart } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -61,6 +61,7 @@ export function AdminNav({ role }: { role: string }) {
     },
     { name: "Media", href: "/media", icon: ImageIcon, roles: ["super_admin", "admin"] },
     { name: "Reviews", href: "/reviews", icon: Star, roles: ["super_admin", "admin"] },
+    { name: "Customer Wishes", href: "/customer-wishes", icon: Heart, roles: ["super_admin", "admin"] },
     { name: "Settings", href: "/settings", icon: Settings, roles: ["super_admin"] },
     { name: "Team", href: "/team", icon: Users, roles: ["super_admin"] },
   ];

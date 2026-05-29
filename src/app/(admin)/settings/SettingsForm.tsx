@@ -10,19 +10,27 @@ export function SettingsForm({ initialPaymentDetails }: { initialPaymentDetails:
   const [details, setDetails] = useState(initialPaymentDetails);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const supabase = createClient();
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setSaved(false);
+    setError(null);
 
-    await supabase
-      .from("settings")
-      .update({ value: details })
-      .eq("key", "payment_details");
+    const { error: saveError } = await supabase.from("settings").upsert(
+      { key: "payment_details", value: details },
+      { onConflict: "key" }
+    );
 
     setSaving(false);
+
+    if (saveError) {
+      setError(saveError.message);
+      return;
+    }
+
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -45,6 +53,7 @@ export function SettingsForm({ initialPaymentDetails }: { initialPaymentDetails:
           />
         </div>
       </div>
+      {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={saving}>
         {saving ? "Saving..." : saved ? "Saved!" : "Save Settings"}
       </Button>

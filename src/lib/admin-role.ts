@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 
-const SUPER_ADMIN_EMAIL = "yeezus196@gmail.com";
+export const SUPER_ADMIN_EMAIL = "yeezus196@gmail.com";
 
 export type AdminRole = "super_admin" | "admin" | "employee";
 

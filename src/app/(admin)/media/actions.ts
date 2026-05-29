@@ -1,14 +1,11 @@
 "use server";
 
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { requireCatalogManager } from "@/lib/admin-role";
+import { createAdminClient } from "@/utils/supabase/admin";
 
 function getAdminClient() {
-  return createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  return createAdminClient();
 }
 
 async function removeBannerRowsByTitle(supabase: ReturnType<typeof getAdminClient>, title: string) {
