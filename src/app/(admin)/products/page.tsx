@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { ProductsTable } from "./ProductsTable";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -59,18 +60,18 @@ export default async function ProductsPage({
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{pageTitle}</h1>
-          <p className="text-muted-foreground text-sm mt-1">Manage your storefront inventory and product details.</p>
-        </div>
-        <Link href={addProductHref}>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" /> Add Product
-          </Button>
-        </Link>
-      </div>
-      <div className="bg-card border border-border">
+      <AdminPageHeader
+        title={pageTitle}
+        description="Manage storefront inventory and product details."
+        actions={
+          <Link href={addProductHref}>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> Add Product
+            </Button>
+          </Link>
+        }
+      />
+      <div className="admin-panel overflow-hidden">
         <ProductsTable initialProducts={products || []} role={role} />
       </div>
     </div>

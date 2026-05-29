@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { TeamTable } from "./TeamTable";
 import { AddMemberForm } from "./AddMemberForm";
 
@@ -26,13 +27,14 @@ export default async function TeamPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Team Management</h1>
-      </div>
+      <AdminPageHeader
+        title="Team"
+        description="Invite staff and manage roles for the admin vault."
+      />
       
       <AddMemberForm />
 
-      <div className="bg-card border border-border">
+      <div className="admin-panel overflow-hidden">
         <TeamTable initialMembers={teamMembers || []} currentUserId={session?.user.id || ""} />
       </div>
     </div>

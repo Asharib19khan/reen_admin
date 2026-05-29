@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { SettingsForm } from "./SettingsForm";
 import { redirect } from "next/navigation";
 import { requireSuperAdmin } from "@/lib/admin-role";
@@ -20,9 +21,10 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-8 max-w-2xl">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-      </div>
+      <AdminPageHeader
+        title="Settings"
+        description="Payment details and global storefront configuration."
+      />
       <SettingsForm initialPaymentDetails={setting?.value || ""} />
     </div>
   );

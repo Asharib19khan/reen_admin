@@ -24,41 +24,95 @@
   --color-card-foreground: var(--card-foreground);
   --radius-lg: var(--radius);
   --radius-md: var(--radius);
-  --radius-sm: var(--radius);
+  --radius-sm: calc(var(--radius) - 2px);
+  --font-sans: var(--font-sans-family);
+  --font-mono: var(--font-mono-family);
 }
 
 @layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ffffff;
-    --card: #111111;
-    --card-foreground: #ffffff;
-    --popover: #111111;
-    --popover-foreground: #ffffff;
-    --primary: #ffffff;
-    --primary-foreground: #000000;
-    --secondary: #222222;
-    --secondary-foreground: #ffffff;
-    --muted: #222222;
-    --muted-foreground: #a3a3a3;
-    --accent: #222222;
-    --accent-foreground: #ffffff;
-    --destructive: #ff3333;
-    --destructive-foreground: #ffffff;
-    --success: #00ff00;
-    --success-foreground: #000000;
-    --border: #333333;
-    --input: #222222;
-    --ring: #ffffff;
-    --radius: 0;
+    --background: #090c10;
+    --foreground: #e6edf7;
+    --card: #0f1319;
+    --card-foreground: #e6edf7;
+    --popover: #121820;
+    --popover-foreground: #e6edf7;
+    --primary: #5b9cf5;
+    --primary-foreground: #061018;
+    --secondary: #161c26;
+    --secondary-foreground: #c8d4e6;
+    --muted: #161c26;
+    --muted-foreground: #8b9cb3;
+    --accent: #1a2330;
+    --accent-foreground: #7dd3fc;
+    --destructive: #f07178;
+    --destructive-foreground: #1a0a0c;
+    --success: #3ecf8e;
+    --success-foreground: #04140c;
+    --border: #243044;
+    --input: #121820;
+    --ring: #5b9cf5;
+    --radius: 0.5rem;
+    --glow: rgba(91, 156, 245, 0.15);
+    --font-sans-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-mono-family: "JetBrains Mono", ui-monospace, monospace;
   }
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/40;
   }
+
+  html {
+    @apply h-full scroll-smooth;
+  }
+
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply min-h-full bg-background text-foreground antialiased;
+    font-family: var(--font-sans-family);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(91, 156, 245, 0.12), transparent),
+      linear-gradient(rgba(36, 48, 68, 0.35) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(36, 48, 68, 0.35) 1px, transparent 1px);
+    background-size: 100% 100%, 32px 32px, 32px 32px;
+    background-position: center top, center center, center center;
+  }
+
+  ::selection {
+    background: rgba(91, 156, 245, 0.35);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #243044;
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3d4f6a;
+  }
+}
+
+@layer components {
+  .admin-panel {
+    @apply rounded-lg border border-border/80 bg-card/90 shadow-sm backdrop-blur-sm;
+  }
+
+  .admin-mono-label {
+    @apply font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground;
+  }
+
+  .admin-page-title {
+    @apply text-2xl font-semibold tracking-tight text-foreground md:text-3xl;
   }
 }

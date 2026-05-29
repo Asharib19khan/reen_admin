@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { CustomerWishesTable } from "./CustomerWishesTable";
 import { canManageCatalog, getAdminRole } from "@/lib/admin-role";
 
@@ -39,14 +40,12 @@ export default async function CustomerWishesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Customer Wishes</h1>
-        <p className="text-muted-foreground mt-2">
-          Products customers have saved to their wishlist on the storefront.
-        </p>
-      </div>
+      <AdminPageHeader
+        title="Customer Wishes"
+        description="Products customers have saved to their wishlist on the storefront."
+      />
 
-      <div className="bg-card border rounded-lg overflow-hidden shadow-sm">
+      <div className="admin-panel overflow-hidden">
         <CustomerWishesTable initialWishes={wishes || []} role={auth.role} />
       </div>
     </div>

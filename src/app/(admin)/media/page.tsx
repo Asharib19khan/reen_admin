@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { MediaSlot } from "./MediaSlot";
 import { canManageCatalog, getAdminRole } from "@/lib/admin-role";
 import { redirect } from "next/navigation";
@@ -24,14 +25,14 @@ export default async function MediaPage() {
   const getBanner = (title: string) => banners?.find(b => b.title === title) || null;
 
   return (
-    <div className="p-8 max-w-5xl mx-auto w-full">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Media Slots</h1>
-        <p className="text-muted-foreground mt-1">Efficiently manage predefined media sections across your storefront.</p>
-      </div>
+    <div className="max-w-5xl mx-auto w-full space-y-8">
+      <AdminPageHeader
+        title="Media Slots"
+        description="Manage predefined hero banners across your storefront."
+      />
 
       <div className="space-y-8">
-        <div className="bg-card border border-border rounded-xl shadow-sm divide-y">
+        <div className="admin-panel divide-y overflow-hidden">
           <div className="bg-muted/30 p-4 border-b border-border">
             <h2 className="text-xl font-bold">Home Page Hero</h2>
           </div>
@@ -47,7 +48,7 @@ export default async function MediaPage() {
           />
         </div>
 
-        <div className="bg-card border border-border rounded-xl shadow-sm divide-y">
+        <div className="admin-panel divide-y overflow-hidden">
           <div className="bg-muted/30 p-4 border-b border-border">
             <h2 className="text-xl font-bold">byreen.xo Section Hero</h2>
           </div>
@@ -63,7 +64,7 @@ export default async function MediaPage() {
           />
         </div>
 
-        <div className="bg-card border border-border rounded-xl shadow-sm divide-y">
+        <div className="admin-panel divide-y overflow-hidden">
           <div className="bg-muted/30 p-4 border-b border-border">
             <h2 className="text-xl font-bold">luxereen.wears Section Hero</h2>
           </div>

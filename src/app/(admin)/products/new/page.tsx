@@ -1,5 +1,6 @@
 import { ProductForm } from "../ProductForm";
 import { createClient } from "@/utils/supabase/server";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 
 export default async function NewProductPage({
   searchParams
@@ -16,9 +17,7 @@ export default async function NewProductPage({
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Add New Product</h1>
-      </div>
+      <AdminPageHeader title="Add Product" description="Create a new catalog item for the storefront." />
       <ProductForm initialData={{
         brand: resolvedParams.brand || "byreen_xo",
         category,

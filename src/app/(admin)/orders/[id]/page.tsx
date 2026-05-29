@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -20,15 +21,17 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
   return (
     <div className="space-y-8 max-w-4xl">
-      <div className="flex items-center gap-4">
-        <Link href="/orders" className="text-muted-foreground hover:text-foreground transition-colors">
+      <div className="flex items-start gap-4">
+        <Link href="/orders" className="mt-1 text-muted-foreground transition-colors hover:text-primary">
           <ArrowLeft className="h-5 w-5" />
         </Link>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Order Details</h1>
-          <p className="text-muted-foreground text-sm font-mono mt-1">ID: {order.id}</p>
+        <div className="flex-1">
+          <AdminPageHeader
+            title="Order Details"
+            description={`ID: ${order.id}`}
+            badge={order.status}
+          />
         </div>
-        <Badge variant="outline" className="ml-auto">{order.status}</Badge>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8">

@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { notFound, redirect } from "next/navigation";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { ProductForm } from "../ProductForm";
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -16,9 +17,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Edit Product</h1>
-      </div>
+      <AdminPageHeader title="Edit Product" description={product.title} badge={product.brand} />
       <ProductForm initialData={product} />
     </div>
   );

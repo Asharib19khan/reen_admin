@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { OrdersTable } from "./OrdersTable";
 
 export default async function OrdersPage() {
@@ -15,10 +16,11 @@ export default async function OrdersPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Orders</h1>
-      </div>
-      <div className="bg-card border border-border">
+      <AdminPageHeader
+        title="Orders"
+        description="Track and fulfill customer orders from the storefront."
+      />
+      <div className="admin-panel overflow-hidden">
         <OrdersTable initialOrders={orders || []} role={role} />
       </div>
     </div>
