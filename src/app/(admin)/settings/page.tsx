@@ -13,11 +13,14 @@ export default async function SettingsPage() {
 
   const supabase = await createClient();
 
-  const { data: setting } = await supabase
+  const { data: settings } = await supabase
     .from("settings")
-    .select("value")
-    .eq("key", "payment_details")
-    .maybeSingle();
+    .select("key, value")
+    .in("key", ["payment_details", "hide_byreen_xo", "hide_luxereen_wears"]);
+
+  const getSetting = (key: string, defaultValue: string = "") => {
+    return settings?.find(s => s.key === key)?.value || defaultValue;
+  };
 
   return (
     <div className="space-y-8 max-w-2xl">
@@ -25,7 +28,11 @@ export default async function SettingsPage() {
         title="Settings"
         description="Payment details and global storefront configuration."
       />
-      <SettingsForm initialPaymentDetails={setting?.value || ""} />
+      <SettingsForm 
+        initialPaymentDetails={getSetting("payment_details")}
+        initialHideByreen={getSetting("hide_byreen_xo") === "true"}
+        initialHideLuxereen={getSetting("hide_luxereen_wears") === "true"}
+      />
     </div>
   );
 }
