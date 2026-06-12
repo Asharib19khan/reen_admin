@@ -14,7 +14,7 @@ type Order = {
   created_at: string;
 };
 
-export function OrdersTable({ initialOrders, role = "employee" }: { initialOrders: Order[], role?: string }) {
+export function OrdersTable({ initialOrders, role = "admin" }: { initialOrders: Order[], role?: string }) {
   const [orders, setOrders] = useState(initialOrders);
   const supabase = createClient();
   

@@ -20,7 +20,7 @@ type Product = {
   image_urls?: string[];
 };
 
-export function ProductsTable({ initialProducts, role = "employee" }: { initialProducts: Product[], role?: string }) {
+export function ProductsTable({ initialProducts, role = "admin" }: { initialProducts: Product[], role?: string }) {
   const [products, setProducts] = useState(initialProducts);
   const supabase = createClient();
   
@@ -61,7 +61,7 @@ export function ProductsTable({ initialProducts, role = "employee" }: { initialP
           products.map((product) => (
             <TableRow key={product.id}>
               <TableCell>
-                <div className="w-10 h-10 bg-muted overflow-hidden border border-border">
+                <div className="rounded-2xl border border-border/40 overflow-hidden bg-card/60 backdrop-blur-xl shadow-sm">
                   {product.image_urls?.[0] ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={product.image_urls[0]} alt="" className="w-full h-full object-cover" />

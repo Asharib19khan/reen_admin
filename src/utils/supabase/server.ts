@@ -13,6 +13,9 @@ export async function createClient() {
   const cookieStore = await cookies()
 
   return createServerClient(env.url, env.anonKey, {
+    global: {
+      fetch: (url, init) => fetch(url, { ...init, cache: 'no-store' }),
+    },
     cookies: {
       getAll() {
         return cookieStore.getAll()

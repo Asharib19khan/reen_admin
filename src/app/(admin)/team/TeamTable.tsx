@@ -81,9 +81,8 @@ export function TeamTable({ initialMembers, currentUserId }: { initialMembers: M
                 style={{ colorScheme: 'dark' }}
                 className="bg-background text-foreground border border-input text-sm rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <option value="super_admin">super_admin</option>
+                <option value="super_admin" disabled>super_admin</option>
                 <option value="admin">admin</option>
-                <option value="employee">employee</option>
               </select>
             </TableCell>
             <TableCell className="text-right">

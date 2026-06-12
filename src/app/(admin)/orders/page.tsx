@@ -1,13 +1,13 @@
 import { createClient } from "@/utils/supabase/server";
+import { getAdminRole } from "@/lib/admin-role";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { OrdersTable } from "./OrdersTable";
 
 export default async function OrdersPage() {
   const supabase = await createClient();
   
-  const { data: { session } } = await supabase.auth.getSession();
-  const { data: userRole } = await supabase.from("user_roles").select("role").eq("id", session?.user.id).single();
-  const role = session?.user.email?.toLowerCase() === 'yeezus196@gmail.com' ? 'super_admin' : (userRole?.role || "employee");
+  const auth = await getAdminRole();
+  const role = auth?.role || "admin";
 
   const { data: orders } = await supabase
     .from("orders")

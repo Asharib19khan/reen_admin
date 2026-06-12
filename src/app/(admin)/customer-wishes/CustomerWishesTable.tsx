@@ -37,7 +37,7 @@ function getProduct(wish: CustomerWish): ProductSummary | null {
 
 export function CustomerWishesTable({
   initialWishes,
-  role = "employee",
+  role = "admin",
 }: {
   initialWishes: CustomerWish[];
   role?: string;

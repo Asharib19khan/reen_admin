@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 
 export const SUPER_ADMIN_EMAIL = "yeezus196@gmail.com";
 
-export type AdminRole = "super_admin" | "admin" | "employee";
+export type AdminRole = "super_admin" | "admin";
 
 export async function getAdminRole(): Promise<{
   role: AdminRole;
@@ -17,16 +17,23 @@ export async function getAdminRole(): Promise<{
 
   if (error || !user) return null;
 
-  const { data: userRole } = await supabase
+  const { data: userRole, error: roleError } = await supabase
     .from("user_roles")
     .select("role")
     .eq("id", user.id)
     .single();
 
+  console.log("DEBUG getAdminRole:", {
+    userId: user.id,
+    userEmail: user.email,
+    userRoleData: userRole,
+    roleError: roleError
+  });
+
   const role: AdminRole =
     user.email?.toLowerCase() === SUPER_ADMIN_EMAIL
       ? "super_admin"
-      : ((userRole?.role as AdminRole) || "employee");
+      : ((userRole?.role as AdminRole) || "admin");
 
   return { role, userId: user.id, email: user.email ?? "" };
 }

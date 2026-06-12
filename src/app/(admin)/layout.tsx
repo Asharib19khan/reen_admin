@@ -2,6 +2,8 @@ import { AdminNav } from "@/components/AdminNav";
 import { getAdminRole } from "@/lib/admin-role";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({
   children,
 }: {

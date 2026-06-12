@@ -41,20 +41,9 @@ export function AddMemberForm() {
           <Label htmlFor="password">Password</Label>
           <Input id="password" name="password" type="password" placeholder="min 6 chars" required minLength={6} autoComplete="new-password" />
         </div>
-        <div className="grid gap-2 w-48">
-          <Label htmlFor="role">Role</Label>
-          <select
-            id="role"
-            name="role"
-            style={{ colorScheme: 'dark' }}
-            className="flex h-10 w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <option value="employee">Employee</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
+        <input type="hidden" name="role" value="admin" />
         <Button type="submit" disabled={loading}>
-          {loading ? "Adding..." : "Add Member"}
+          {loading ? "Adding..." : "Add Admin"}
         </Button>
       </form>
       {error && <p className="text-destructive text-sm font-medium">{error}</p>}

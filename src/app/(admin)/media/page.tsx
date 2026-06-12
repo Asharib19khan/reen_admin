@@ -38,12 +38,12 @@ export default async function MediaPage() {
           </div>
           <MediaSlot 
             title="Home_page_hero_desktop" 
-            description="Desktop View (For laptops & large screens). Recommended Size: 1920x1080 (16:9 Widescreen)."
+            description="Desktop View. Recommended Size: 1920x1080 (16:9 Widescreen for full-screen Nishat style layout)."
             banner={getBanner("Home_page_hero_desktop")} 
           />
           <MediaSlot 
             title="Home_page_hero_mobile" 
-            description="Mobile View (For phones). Recommended Size: 1080x1920 (9:16 Vertical/Portrait)."
+            description="Mobile View. Recommended Size: 1080x1920 (9:16 Vertical/Portrait for full-screen immersive layout)."
             banner={getBanner("Home_page_hero_mobile")} 
           />
         </div>

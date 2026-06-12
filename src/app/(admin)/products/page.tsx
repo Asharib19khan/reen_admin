@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { getAdminRole } from "@/lib/admin-role";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { ProductsTable } from "./ProductsTable";
 import { Button } from "@/components/ui/button";
@@ -17,9 +18,8 @@ export default async function ProductsPage({
     ? decodeURIComponent(resolvedParams.category)
     : undefined;
 
-  const { data: { session } } = await supabase.auth.getSession();
-  const { data: userRole } = await supabase.from("user_roles").select("role").eq("id", session?.user.id).single();
-  const role = session?.user.email?.toLowerCase() === 'yeezus196@gmail.com' ? 'super_admin' : (userRole?.role || "employee");
+  const auth = await getAdminRole();
+  const role = auth?.role || "employee";
 
   let query = supabase.from("products").select("*").order("created_at", { ascending: false });
 

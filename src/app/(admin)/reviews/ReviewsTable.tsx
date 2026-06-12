@@ -16,7 +16,7 @@ type Review = {
   created_at: string; 
 };
 
-export function ReviewsTable({ initialReviews, role = "employee" }: { initialReviews: Review[], role?: string }) {
+export function ReviewsTable({ initialReviews, role = "admin" }: { initialReviews: Review[], role?: string }) {
   const [reviews, setReviews] = useState(initialReviews);
   const supabase = createClient();
   

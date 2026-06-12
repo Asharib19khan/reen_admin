@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
-const sans = Plus_Jakarta_Sans({
+export const dynamic = "force-dynamic";
+
+const sans = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
 });
 
-const mono = JetBrains_Mono({
-  variable: "--font-mono",
+const display = Outfit({
+  variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
 });
@@ -25,8 +28,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable} h-full`}>
-      <body className={`${sans.className} min-h-full flex flex-col antialiased`}>{children}</body>
+    <html lang="en" className={`${sans.variable} ${display.variable} h-full`} suppressHydrationWarning>
+      <body className={`${sans.className} min-h-full flex flex-col antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

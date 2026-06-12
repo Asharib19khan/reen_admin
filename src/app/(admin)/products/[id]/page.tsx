@@ -1,15 +1,14 @@
 import { createClient } from "@/utils/supabase/server";
-import { notFound, redirect } from "next/navigation";
+import { getAdminRole } from "@/lib/admin-role";
+import { notFound } from "next/navigation";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { ProductForm } from "../ProductForm";
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const { data: userRole } = await supabase.from("user_roles").select("role").eq("id", session?.user.id).single();
-  const role = session?.user.email?.toLowerCase() === 'yeezus196@gmail.com' ? 'super_admin' : userRole?.role;
-  if (role === "employee") redirect("/products");
+  const auth = await getAdminRole();
+  const role = auth?.role || "admin";
 
   const { data: product } = await supabase.from("products").select("*").eq("id", resolvedParams.id).single();
 

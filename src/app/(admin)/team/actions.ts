@@ -38,16 +38,17 @@ export async function addTeamMember(formData: FormData) {
 
   const userId = authData.user.id;
 
-  // 2. The trigger automatically created them as 'employee', so we update it to the requested role if needed
-  if (role !== "employee") {
-    const { error: updateError } = await supabaseAdmin
-      .from("user_roles")
-      .update({ role })
-      .eq("id", userId);
+  // 2. Ensure the correct role is set via upsert (handling potential trigger race conditions)
+  // Wait briefly to allow the auth trigger to complete
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  const { error: updateError } = await supabaseAdmin
+    .from("user_roles")
+    .upsert({ id: userId, email, role: 'admin' })
+    .select();
 
-    if (updateError) {
-      return { error: "User created, but failed to assign role: " + updateError.message };
-    }
+  if (updateError) {
+    return { error: "User created, but failed to assign role: " + updateError.message };
   }
 
   revalidatePath("/team");
