@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { Package, ShoppingCart, AlertCircle, Clock } from "lucide-react";
 import { DashboardCharts } from "@/components/DashboardCharts";
-
 export default async function Dashboard() {
   const supabase = await createClient();
 

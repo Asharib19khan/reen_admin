@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Area,
   AreaChart,
@@ -32,6 +33,25 @@ interface DashboardChartsProps {
 }
 
 export function DashboardCharts({ salesData, categoryData }: DashboardChartsProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-8">
+        <Card className="col-span-4 h-[450px] flex items-center justify-center bg-muted/20 animate-pulse">
+          <p className="text-muted-foreground">Loading charts...</p>
+        </Card>
+        <Card className="col-span-3 h-[450px] flex items-center justify-center bg-muted/20 animate-pulse">
+          <p className="text-muted-foreground">Loading charts...</p>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-8">
       <Card className="col-span-4">
@@ -83,7 +103,8 @@ export function DashboardCharts({ salesData, categoryData }: DashboardChartsProp
                 fill="#8884d8"
                 paddingAngle={5}
                 dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                label={(props: any) => `${props.name} ${(props.percent * 100).toFixed(0)}%`}
                 labelLine={false}
               >
                 {categoryData.map((entry, index) => (
