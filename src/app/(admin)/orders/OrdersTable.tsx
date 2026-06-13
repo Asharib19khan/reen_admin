@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { deleteOrder } from "./actions";
 
 type Order = {
   id: string;
@@ -36,17 +37,10 @@ export function OrdersTable({ initialOrders, role = "admin" }: { initialOrders: 
     const previousOrders = [...orders];
     setOrders(orders.filter(o => o.id !== id));
     
-    // 1. Delete associated order items first to avoid foreign key constraint errors
-    await supabase.from("order_items").delete().eq("order_id", id);
-    
-    // 2. Delete the order itself
-    const { error } = await supabase
-      .from("orders")
-      .delete()
-      .eq("id", id);
+    const result = await deleteOrder(id);
       
-    if (error) {
-       console.error("Error deleting order:", error);
+    if (!result.success) {
+       console.error("Error deleting order:", result.error);
        alert("Failed to delete order. It might be linked to other records.");
        setOrders(previousOrders); // Revert on failure
     }
