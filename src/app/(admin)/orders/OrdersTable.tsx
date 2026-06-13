@@ -29,6 +29,29 @@ export function OrdersTable({ initialOrders, role = "admin" }: { initialOrders: 
       .eq("id", id);
   };
 
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to permanently delete this order? This action cannot be undone.")) return;
+    
+    // Optimistic UI update
+    const previousOrders = [...orders];
+    setOrders(orders.filter(o => o.id !== id));
+    
+    // 1. Delete associated order items first to avoid foreign key constraint errors
+    await supabase.from("order_items").delete().eq("order_id", id);
+    
+    // 2. Delete the order itself
+    const { error } = await supabase
+      .from("orders")
+      .delete()
+      .eq("id", id);
+      
+    if (error) {
+       console.error("Error deleting order:", error);
+       alert("Failed to delete order. It might be linked to other records.");
+       setOrders(previousOrders); // Revert on failure
+    }
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -74,9 +97,19 @@ export function OrdersTable({ initialOrders, role = "admin" }: { initialOrders: 
                 </select>
               </TableCell>
               <TableCell className="text-right">
-                <Link href={`/orders/${order.id}`} className="text-sm text-primary hover:underline font-medium">
-                  View
-                </Link>
+                <div className="flex justify-end gap-3 items-center">
+                  <Link href={`/orders/${order.id}`} className="text-sm text-primary hover:underline font-medium">
+                    View
+                  </Link>
+                  {role === "super_admin" && (
+                    <button 
+                      onClick={() => handleDelete(order.id)}
+                      className="text-sm text-destructive hover:underline font-medium"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </TableCell>
             </TableRow>
           ))
