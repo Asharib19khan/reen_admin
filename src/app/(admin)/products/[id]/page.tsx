@@ -10,7 +10,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   const auth = await getAdminRole();
   const role = auth?.role || "admin";
 
-  const { data: product } = await supabase.from("products").select("*").eq("id", resolvedParams.id).single();
+  const { data: product } = await supabase.from("products").select("*, product_variants(*)").eq("id", resolvedParams.id).single();
 
   if (!product) notFound();
 

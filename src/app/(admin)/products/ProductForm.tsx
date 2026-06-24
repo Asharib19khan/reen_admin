@@ -9,7 +9,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, Upload } from "lucide-react";
+import { Trash2, Upload, Plus } from "lucide-react";
+
+interface ProductVariant {
+  id?: string;
+  color: string;
+  size: string;
+  quantity: number;
+  sku: string;
+}
 
 const BYREEN_CATEGORIES = [
   "Rings",
@@ -34,6 +42,10 @@ export function ProductForm({ initialData }: { initialData?: any }) {
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  
+  const [variants, setVariants] = useState<ProductVariant[]>(
+    initialData?.product_variants || []
+  );
   
   const [formData, setFormData] = useState({
     title: initialData?.title || "",
@@ -125,12 +137,40 @@ export function ProductForm({ initialData }: { initialData?: any }) {
     const payload = JSON.parse(JSON.stringify(formData));
     
     try {
+      let productId = initialData?.id;
       if (initialData?.id) {
         const result = await supabase.from("products").update(payload).eq("id", initialData.id);
         error = result.error;
       } else {
-        const result = await supabase.from("products").insert([payload]);
+        const result = await supabase.from("products").insert([payload]).select().single();
         error = result.error;
+        if (result.data) productId = result.data.id;
+      }
+
+      if (!error && productId) {
+        if (variants.length > 0) {
+          const variantsToUpsert = variants.map(v => ({
+            ...(v.id ? { id: v.id } : {}),
+            product_id: productId,
+            color: v.color || null,
+            size: v.size || null,
+            quantity: v.quantity || 0,
+            sku: v.sku || null
+          }));
+          
+          if (initialData?.id) {
+             const currentVariantIds = variants.map(v => v.id).filter(Boolean);
+             if (currentVariantIds.length > 0) {
+                await supabase.from("product_variants").delete().eq("product_id", productId).not("id", "in", `(${currentVariantIds.join(',')})`);
+             } else {
+                await supabase.from("product_variants").delete().eq("product_id", productId);
+             }
+          }
+          const variantResult = await supabase.from("product_variants").upsert(variantsToUpsert);
+          if (variantResult.error) throw variantResult.error;
+        } else if (initialData?.id) {
+          await supabase.from("product_variants").delete().eq("product_id", productId);
+        }
       }
     } catch (err: any) {
       error = err;
@@ -383,6 +423,45 @@ export function ProductForm({ initialData }: { initialData?: any }) {
           <div className="space-y-2">
             <Label>Interactive Customization / Add-ons</Label>
             <Textarea placeholder="e.g., Contrasting Ribbon Color options or Charm selectors" value={formData.interactive_addons} onChange={(e) => setFormData({...formData, interactive_addons: e.target.value})} />
+          </div>
+
+          <div className="pt-6 border-t border-border mt-6">
+            <div className="flex justify-between items-center mb-4">
+              <Label className="text-base font-semibold">Granular Inventory (Variants)</Label>
+              <Button type="button" variant="outline" size="sm" onClick={() => setVariants([...variants, { color: "", size: "", quantity: 0, sku: "" }])}>
+                <Plus className="h-4 w-4 mr-2" /> Add Variant
+              </Button>
+            </div>
+            
+            {variants.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No specific variants created. Master stock quantity will be used.</p>
+            ) : (
+              <div className="space-y-4">
+                {variants.map((v, i) => (
+                  <div key={i} className="flex flex-wrap md:flex-nowrap gap-3 items-end p-3 border border-border/50 rounded-lg bg-background/50">
+                    <div className="space-y-1 flex-1">
+                      <Label className="text-xs">Color</Label>
+                      <Input className="h-8 text-sm" value={v.color} onChange={e => { const newV = [...variants]; newV[i].color = e.target.value; setVariants(newV); }} placeholder="e.g. Olive" />
+                    </div>
+                    <div className="space-y-1 flex-1">
+                      <Label className="text-xs">Size</Label>
+                      <Input className="h-8 text-sm" value={v.size} onChange={e => { const newV = [...variants]; newV[i].size = e.target.value; setVariants(newV); }} placeholder="e.g. M" />
+                    </div>
+                    <div className="space-y-1 flex-1">
+                      <Label className="text-xs">SKU</Label>
+                      <Input className="h-8 text-sm" value={v.sku} onChange={e => { const newV = [...variants]; newV[i].sku = e.target.value; setVariants(newV); }} placeholder="e.g. BYR-OLV-M" />
+                    </div>
+                    <div className="space-y-1 flex-1">
+                      <Label className="text-xs">Quantity</Label>
+                      <Input className="h-8 text-sm" type="number" min="0" value={v.quantity} onChange={e => { const newV = [...variants]; newV[i].quantity = parseInt(e.target.value) || 0; setVariants(newV); }} />
+                    </div>
+                    <Button type="button" variant="destructive" size="icon" className="h-8 w-8 shrink-0" onClick={() => { const newV = [...variants]; newV.splice(i, 1); setVariants(newV); }}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

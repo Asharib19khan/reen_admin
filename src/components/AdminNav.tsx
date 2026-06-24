@@ -16,6 +16,7 @@ import {
   Star,
   Heart,
   Terminal,
+  Tag,
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
@@ -81,6 +82,7 @@ export function AdminNav({ role, email }: { role: string; email?: string }) {
         },
       ],
     },
+    { name: "Promos", href: "/promos", icon: Tag, roles: ["super_admin", "admin"] },
     { name: "Media", href: "/media", icon: ImageIcon, roles: ["super_admin", "admin"] },
     { name: "Reviews", href: "/reviews", icon: Star, roles: ["super_admin", "admin"] },
     { name: "Customer Wishes", href: "/customer-wishes", icon: Heart, roles: ["super_admin", "admin"] },
