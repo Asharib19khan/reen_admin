@@ -96,13 +96,61 @@ export function ProductForm({ initialData }: { initialData?: any }) {
     }
     
     setFormData({ ...formData, image_urls: newUrls });
+    
+    if (initialData?.id) {
+      await supabase.from("products").update({ image_urls: newUrls }).eq("id", initialData.id);
+      router.refresh();
+    }
+    
     setUploading(false);
   };
 
-  const removeImage = (index: number) => {
+  const removeImage = async (index: number) => {
+    const urlToRemove = formData.image_urls[index];
     const newUrls = [...formData.image_urls];
     newUrls.splice(index, 1);
     setFormData({ ...formData, image_urls: newUrls });
+
+    try {
+      if (urlToRemove) {
+        const urlObj = new URL(urlToRemove);
+        const parts = urlObj.pathname.split('/');
+        const fileName = parts[parts.length - 1];
+        if (fileName) {
+          await supabase.storage.from('product-images').remove([fileName]);
+        }
+      }
+    } catch (e) {
+      console.error("Storage removal error:", e);
+    }
+
+    if (initialData?.id) {
+      await supabase.from("products").update({ image_urls: newUrls }).eq("id", initialData.id);
+      router.refresh();
+    }
+  };
+
+  const removeSingleFile = async (field: 'view_360_url' | 'video_url') => {
+    const urlToRemove = formData[field] as string;
+    setFormData({ ...formData, [field]: "" });
+    
+    try {
+      if (urlToRemove) {
+        const urlObj = new URL(urlToRemove);
+        const parts = urlObj.pathname.split('/');
+        const fileName = parts[parts.length - 1];
+        if (fileName) {
+          await supabase.storage.from('product-images').remove([fileName]);
+        }
+      }
+    } catch (e) {
+      console.error("Storage removal error:", e);
+    }
+
+    if (initialData?.id) {
+      await supabase.from("products").update({ [field]: "" }).eq("id", initialData.id);
+      router.refresh();
+    }
   };
 
   const handleSingleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'view_360_url' | 'video_url') => {
@@ -122,6 +170,11 @@ export function ProductForm({ initialData }: { initialData?: any }) {
     } else {
       const { data } = supabase.storage.from('product-images').getPublicUrl(fileName);
       setFormData({ ...formData, [field]: data.publicUrl });
+      
+      if (initialData?.id) {
+        await supabase.from("products").update({ [field]: data.publicUrl }).eq("id", initialData.id);
+        router.refresh();
+      }
     }
     
     setUploading(false);
@@ -318,7 +371,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                 {formData.view_360_url && (
                   <div className="text-sm text-muted-foreground truncate w-64">
                     <a href={formData.view_360_url} target="_blank" className="hover:underline">{formData.view_360_url}</a>
-                    <button type="button" onClick={() => setFormData({...formData, view_360_url: ""})} className="ml-2 text-destructive"><Trash2 className="h-4 w-4 inline" /></button>
+                    <button type="button" onClick={() => removeSingleFile('view_360_url')} className="ml-2 text-destructive"><Trash2 className="h-4 w-4 inline" /></button>
                   </div>
                 )}
               </div>
@@ -340,7 +393,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                 {formData.video_url && (
                   <div className="text-sm text-muted-foreground truncate w-64">
                     <a href={formData.video_url} target="_blank" className="hover:underline">{formData.video_url}</a>
-                    <button type="button" onClick={() => setFormData({...formData, video_url: ""})} className="ml-2 text-destructive"><Trash2 className="h-4 w-4 inline" /></button>
+                    <button type="button" onClick={() => removeSingleFile('video_url')} className="ml-2 text-destructive"><Trash2 className="h-4 w-4 inline" /></button>
                   </div>
                 )}
               </div>
