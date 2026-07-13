@@ -88,6 +88,7 @@ export function OrdersTable({ initialOrders, role = "admin" }: { initialOrders: 
                   <option value="Pending">Pending</option>
                   <option value="Processing">Processing</option>
                   <option value="Shipped">Shipped</option>
+                  <option value="Received">Received</option>
                 </select>
               </TableCell>
               <TableCell className="text-right">

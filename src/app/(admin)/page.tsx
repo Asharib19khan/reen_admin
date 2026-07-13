@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
-import { Package, ShoppingCart, AlertCircle, Clock } from "lucide-react";
+import { Package, ShoppingCart, AlertCircle, Clock, Truck, CheckCircle2 } from "lucide-react";
 import { DashboardCharts } from "@/components/DashboardCharts";
 export default async function Dashboard() {
   const supabase = await createClient();
@@ -9,11 +9,15 @@ export default async function Dashboard() {
   const [
     { count: totalOrders },
     { count: pendingOrders },
+    { count: shippedOrders },
+    { count: receivedOrders },
     { count: totalProducts },
     { count: lowStockProducts },
   ] = await Promise.all([
     supabase.from("orders").select("*", { count: "exact", head: true }),
     supabase.from("orders").select("*", { count: "exact", head: true }).eq("status", "Pending"),
+    supabase.from("orders").select("*", { count: "exact", head: true }).eq("status", "Shipped"),
+    supabase.from("orders").select("*", { count: "exact", head: true }).eq("status", "Received"),
     supabase.from("products").select("*", { count: "exact", head: true }),
     supabase.from("products").select("*", { count: "exact", head: true }).lte("quantity", 3),
   ]);
@@ -70,6 +74,8 @@ export default async function Dashboard() {
   const cards = [
     { title: "Total Orders", value: totalOrders || 0, icon: ShoppingCart, alert: false },
     { title: "Pending Orders", value: pendingOrders || 0, icon: Clock, alert: false },
+    { title: "Shipped Orders", value: shippedOrders || 0, icon: Truck, alert: false },
+    { title: "Received Orders", value: receivedOrders || 0, icon: CheckCircle2, alert: false },
     { title: "Total Products", value: totalProducts || 0, icon: Package, alert: false },
     {
       title: "Low Stock",
@@ -87,7 +93,7 @@ export default async function Dashboard() {
         badge="overview"
       />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {cards.map((card) => (
           <Card
             key={card.title}

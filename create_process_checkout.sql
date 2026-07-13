@@ -3,6 +3,9 @@
 -- Drop the old one just in case the signature was different
 DROP FUNCTION IF EXISTS public.process_checkout(text, text, text, numeric, jsonb);
 
+-- Quick migration to fix the dummy order you just placed!
+UPDATE public.orders SET status = 'Pending' WHERE status = 'pending';
+
 CREATE OR REPLACE FUNCTION public.process_checkout(
   p_customer_name text,
   p_customer_phone text,
@@ -26,7 +29,7 @@ BEGIN
     p_customer_phone,
     p_customer_address,
     p_total_amount,
-    'pending'
+    'Pending'
   ) RETURNING id INTO v_order_id;
 
   -- Iterate over JSON array of cart items
