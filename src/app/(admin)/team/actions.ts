@@ -38,10 +38,7 @@ export async function addTeamMember(formData: FormData) {
 
   const userId = authData.user.id;
 
-  // 2. Ensure the correct role is set via upsert (handling potential trigger race conditions)
-  // Wait briefly to allow the auth trigger to complete
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
+  // 2. Ensure the correct role is set via upsert
   const { error: updateError } = await supabaseAdmin
     .from("user_roles")
     .upsert({ id: userId, email, role: 'admin' })

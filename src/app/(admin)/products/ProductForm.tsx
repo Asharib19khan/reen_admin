@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trash2, Upload, Plus } from "lucide-react";
+import Image from "next/image";
 
 interface ProductVariant {
   id?: string;
@@ -341,8 +342,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {formData.image_urls.map((url: string, idx: number) => (
               <div key={idx} className="relative group aspect-square border bg-muted">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt={`Preview ${idx}`} className="w-full h-full object-cover" />
+                <Image src={url} alt={`Preview ${idx}`} fill sizes="100px" className="object-cover" />
                 <button 
                   type="button" 
                   onClick={() => removeImage(idx)}

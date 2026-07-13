@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
+import Image from "next/image";
 
 type Product = {
   id: string;
@@ -63,8 +64,9 @@ export function ProductsTable({ initialProducts, role = "admin" }: { initialProd
               <TableCell>
                 <div className="rounded-2xl border border-border/40 overflow-hidden bg-card/60 backdrop-blur-xl shadow-sm">
                   {product.image_urls?.[0] ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={product.image_urls[0]} alt="" className="w-full h-full object-cover" />
+                    <div className="relative w-full h-full">
+                      <Image src={product.image_urls[0]} alt="" fill sizes="40px" className="object-cover" />
+                    </div>
                   ) : null}
                 </div>
               </TableCell>

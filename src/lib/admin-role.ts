@@ -30,10 +30,15 @@ export async function getAdminRole(): Promise<{
     roleError: roleError
   });
 
-  const role: AdminRole =
-    user.email?.toLowerCase() === SUPER_ADMIN_EMAIL
-      ? "super_admin"
-      : ((userRole?.role as AdminRole) || "admin");
+  if (user.email?.toLowerCase() === SUPER_ADMIN_EMAIL) {
+    return { role: "super_admin", userId: user.id, email: user.email ?? "" };
+  }
+
+  if (!userRole || !userRole.role) {
+    return null;
+  }
+
+  const role: AdminRole = userRole.role as AdminRole;
 
   return { role, userId: user.id, email: user.email ?? "" };
 }
